@@ -1,55 +1,37 @@
-create table users(
-id int PRIMARY KEY AUTO_INCREMENT,
-nom varchar(50) not null,
- email varchar(50) not null UNIQUE,
- created_at date);
+DROP DATABASE educore;
 
-describe users
+CREATE DATABASE educore;
 
-  create table courses(
-  id int primary key not null,
-  titre varchar(50) not null,
-  prix decimal (10,2),
-  check (prix > 0)
-  );
-describe courses
+USE educore;
 
-create table  enrollments(
-user_id int not null,
-course_id int not null,
-progress int not null,
-CHECK(progress BETWEEN 0 AND 100),
-PRIMARY KEY (user_id, course_id),
-FOREIGN KEY (user_id) REFERENCES users(id),
-FOREIGN KEY (course_id) REFERENCES courses(id)
-  );
-
-describe enrollments
-
-create table  payments(
-user_id int not null,
-amount int not null,
-paid_at DATE NOT NULL DEFAULT (CURRENT_DATE),
-PRIMARY KEY (user_id),
-FOREIGN KEY (user_id) REFERENCES users(id)
+CREATE TABLE users (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    create_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-describe payments
+CREATE TABLE courses (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    titre VARCHAR(150) NOT NULL,
+    prix DECIMAL(8, 2) NOT NULL,
+    CONSTRAINT check_prix CHECK (prix > 0)
+);
 
-INSERT INTO users (nom, email, created_at) VALUES ( 'koli',  
-'kolikouassi@gmail.com',  
-'2026-01-29 13:25:00' 
- );
+CREATE TABLE enrollments (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    course_id INT NOT NULL,
+    progress INT NOT NULL DEFAULT 0,
+	CONSTRAINT check_enrollment_progress CHECK (progress BETWEEN 0 AND 100),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);
 
-SELECT * FROM educore.users
-
-INSERT INTO users (nom, email, created_at) 
-VALUES(
- 'kouassi',  
-'kolikouassi@gmail.com',  
-'2026-01-28 12:25:00' 
- );
-
-INSERT INTO enrollments (progress) 
-VALUES(
- '120');
+CREATE TABLE payments (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    amount DECIMAL(8, 2) NOT NULL,
+    paid_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT check_amount CHECK (amount > 0)
+)
